@@ -63,9 +63,25 @@ public class XMLService {
 				wr.close();
 			} else {
 				LOG.info("UTF-8 NOT found");
-				reader = new FileReader(file_path);
-				LOG.info("Reader charset of " + file_path + ": "
-						+ ((FileReader) reader).getEncoding());
+				// не работает так как надо удалять все до <?xml
+				// reader = new FileReader(file_path); 
+				
+				FileInputStream fis = new FileInputStream(file_path);
+				BufferedReader r = new BufferedReader(new InputStreamReader(fis));
+				Writer wr = new StringWriter();
+				
+				for (String s = ""; (s = r.readLine()) != null;) {
+					wr.write(s); // + System.getProperty("line.separator"));
+					wr.flush();
+				}
+			
+				r.close();
+				reader = new StringReader(wr.toString().trim());
+				wr.close();
+
+				//LOG.info("Reader charset of " + file_path + ": "
+				//		+ ((StringReader) reader).getEncoding());
+				
 			}
 		} catch (Exception ex) {
 			LOG.info("Ошибка чтения файла с конвертацией " + ex.getMessage());
@@ -112,6 +128,20 @@ public class XMLService {
 		}
 		return s;
 	}
+	
+
+	private String removeBlancSpace(String s) {
+		String str = s;
+		int pos = s.indexOf("<?xml");
+		LOG.info("Position Blanc: " + pos);
+		
+		//if (pos > 0) {
+		//	str = s.substring(pos);
+		//}
+		
+		return str.trim();
+	}
+
 
 
 	public Certificate loadCertificate(InputStream input) throws Exception {
