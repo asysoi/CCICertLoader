@@ -33,7 +33,7 @@ public class Certificate {
 	private String stranav;
 	private String stranapr;
 	private String status;
-	private Integer koldoplist;
+	private String koldoplist;
 	private String flexp;
 	private String unnexp;
 	private String expp;
@@ -247,11 +247,11 @@ public class Certificate {
 		this.status = status;
 	}
 
-	public Integer getKoldoplist() {
+	public String getKoldoplist() {
 		return koldoplist;
 	}
 
-	public void setKoldoplist(int koldoplist) {
+	public void setKoldoplist(String koldoplist) {
 		this.koldoplist = koldoplist;
 	}
 

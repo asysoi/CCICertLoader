@@ -67,6 +67,8 @@ public class FSReader extends CERTReader {
 
 								if (cert != null) {
 									validate(cert);
+									LOG.info("    Количество доплистов: ============================================================================>  "  
+											+ cert.getKoldoplist());
 									try {
 										cert.setOtd_id((int) otd_id);
 										checkcert = dao.check(cert);
