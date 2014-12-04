@@ -65,10 +65,11 @@ public class JDBCCertificateDAO implements CertificateDAO {
 		Certificate rcert = null;
 
 		try {
-			String sql = "select * from CERT_VIEW WHERE NOMERCERT = ? AND NBLANKA = ? AND (DATACERT=? or ISSUEDATE=TO_DATE(?,'DD.MM.YY'))";
+			// String sql = "select * from CERT_VIEW WHERE NOMERCERT = ? AND NBLANKA = ? AND (DATACERT=? or ISSUEDATE=TO_DATE(?,'DD.MM.YY'))";
+			String sql = "select * from CERT_VIEW WHERE NOMERCERT = ? AND (DATACERT=? or ISSUEDATE=TO_DATE(?,'DD.MM.YY'))";
 			rcert = template.getJdbcOperations().queryForObject(
 					sql,
-					new Object[] { cert.getNomercert(), cert.getNblanka(),
+					new Object[] { cert.getNomercert(),    // cert.getNblanka(),
 							cert.getDatacert(), cert.getDatacert() },
 					new BeanPropertyRowMapper<Certificate>(Certificate.class));
 			
@@ -181,7 +182,6 @@ public class JDBCCertificateDAO implements CertificateDAO {
 			cert.setCert_id(SequenceGenerator.getNextValue("cert_id", this));
 			SqlParameterSource parameters = new BeanPropertySqlParameterSource(cert);
 			// auto generation return -> GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-			
 			// auto generation return -> int row = template.update(sql_cert, parameters, keyHolder,
 			// auto generation return -> 		new String[] { "CERT_ID" });
 			// auto generation return -> cert_id = keyHolder.getKey().longValue();
@@ -209,10 +209,18 @@ public class JDBCCertificateDAO implements CertificateDAO {
 						for (Product product: cert.getProducts()) {
 							tovar += product.getTovar() +  ", " + product.getKriter() + ", " + product.getVes() + "; "; 
 						}
-				
+				     
 						sql_product = "insert into C_PRODUCT_DENORM values (:cert_id, :tovar)";
 						parameters = new MapSqlParameterSource().addValue("cert_id", cert_id).addValue("tovar",tovar);
-						template.update(sql_product, parameters);
+						
+						try {
+						   template.update(sql_product, parameters);
+				        } catch (Exception ex) {
+				        	LOG.error("Ошибка добавления продуктов сертификата" + cert.getNomercert() + ": " + ex.getMessage());
+							template.getJdbcOperations().update(
+									"DELETE FROM C_CERT WHERE cert_id = ?",	cert_id);
+							cert_id = 0;
+				        }
 					}
 				}
 			}
