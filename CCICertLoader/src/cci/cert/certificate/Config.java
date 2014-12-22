@@ -27,8 +27,9 @@ public class Config {
 	public static String REPPATH="reppath";
 	public static String XMLPATH="xmlpath";
 	public static String ZIPPATH="zippath";
+	public static String LOGPATH="logpath";
 	public static String ISDELETE="isdelete";
 	public static String ISZIP="iszip";
 	public static String FTPSEPARATOR="ftpseparator";
-	
+	public static String ISFTP="isftp";
 }

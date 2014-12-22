@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import cci.cert.certificate.CCIProperty;
 import cci.cert.certificate.Config;
 import cci.cert.repository.FormRepository;
 import cci.cert.service.CERTReader;
@@ -31,11 +32,12 @@ public class StartMenuListener implements ActionListener {
             	CERTService service = context.getBean("CERTService",
             			CERTService.class);
             	
-            	CERTReader reader = context.getBean("FSReader",
-            			FSReader.class);
-            	
-            	reader = context.getBean("FTPReader",
-            		FTPReader.class);
+            	CERTReader reader;
+            	if (Boolean.parseBoolean(CCIProperty.getInstance().getProperty(Config.ISFTP))) {
+            		reader = context.getBean("FTPReader",FTPReader.class);
+            	} else {
+            		reader = context.getBean("FSReader", FSReader.class);
+            	}
 
             	service.setReader(reader);
             	FormRepository.getInstance().setService(service);

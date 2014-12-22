@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import cci.cert.form.CERTApplicationAWT;
@@ -24,14 +25,15 @@ public class CCICertLoader {
 
 		LOG.info("Certificate Loader started");
 
-		ApplicationContext context = new FileSystemXmlApplicationContext(
-				"conf/jdbcconfig.xml");
+		
+		ApplicationContext context = new ClassPathXmlApplicationContext (
+				"/conf/jdbcconfig.xml");
+		
+		System.out.println(context.getApplicationName());
 
 		CERTApplicationAWT appl = context.getBean("CERTApplicationAWT",
 				CERTApplicationAWT.class);
 		
 		appl.start();
-
 	}
-
 }
