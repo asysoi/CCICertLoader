@@ -65,7 +65,9 @@ public class CertificateController {
 		return certificate;
 
 	}
-
+	/* -----------------------------
+	 * Add new certificate in debug mode
+	 * ----------------------------- */
 	@PostMapping(value = "owncerts/debug",  headers = "Accept=application/json")
 	@ResponseStatus(HttpStatus.CREATED)	
 	public OwnCertificate addDebugCertificate(@RequestBody String jsonstr) {
@@ -84,6 +86,9 @@ public class CertificateController {
        return certificate;
 	}
 	
+	/* -----------------------------
+	 * Get certificate by ID
+	 * ----------------------------- */
 	@GetMapping(value = "owncert/{id}", headers = "Accept=application/json")
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<String> getOwnCertificateById(@PathVariable int id) {
@@ -103,6 +108,9 @@ public class CertificateController {
 		return new ResponseEntity<String>("Hello World", responseHeaders, HttpStatus.OK);
 	}
 
+	/* -----------------------------
+	 * Update certificate
+	 * ----------------------------- */
 	@PutMapping(value = "owncerts",  consumes  = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public OwnCertificate updateCountry(@RequestBody OwnCertificate certificate) {
@@ -110,6 +118,9 @@ public class CertificateController {
 
 	}
 	
+	/* -----------------------------
+	 * Delete certificate
+	 * ----------------------------- */
 	@DeleteMapping(value = "owncert/{id}",  consumes  = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public ResponseEntity<String> deleteCountry(@PathVariable("id") int id) {
@@ -120,11 +131,16 @@ public class CertificateController {
 		return new ResponseEntity<String>("Certificate " + id + " deleted.", responseHeaders, HttpStatus.OK);
 	}
 	
+	/* -----------------------------
+	 * Exception handling 
+	 * ----------------------------- */
 	@ExceptionHandler(Exception.class)
+	@ResponseBody
     public ResponseEntity<String> handleIOException(Exception ex) {
 		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.set("Error code", "12345");
-		return new ResponseEntity<String>(ex.toString(), null,  HttpStatus.BAD_REQUEST);
+		responseHeaders.set("Error-Code", "12345");
+		responseHeaders.set("Content-Type", "application/json;charset=utf-8");
+		return new ResponseEntity<String>(ex.toString(), responseHeaders,  HttpStatus.BAD_REQUEST);
     }
 
 }

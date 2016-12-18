@@ -8,6 +8,6 @@ public class AddCertificateException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 
 	public AddCertificateException(String err) {
-		   super("РћС€РёР±РєР° РѕР±СЂР°Р±РѕС‚РєРё СЃРµСЂС‚РёС„РёРєР°С‚Р° РІ С„РѕСЂРјР°С‚Рµ JSON: " + err);
+		   super("Ошибка парсинга строки в формате JSON: " + err);
        }
 }
