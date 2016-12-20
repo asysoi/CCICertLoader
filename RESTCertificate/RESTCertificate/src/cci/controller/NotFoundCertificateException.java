@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 		private static final long serialVersionUID = 1L;
 
 		public  NotFoundCertificateException(String err) {
-			   super("Сертификат не найден: " + err);
+			   super(err);
 	       }
 	}

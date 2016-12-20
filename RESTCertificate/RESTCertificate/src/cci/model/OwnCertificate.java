@@ -137,6 +137,7 @@ public class OwnCertificate {
 	public void setDateload(String dateload) {
 		this.dateload = dateload;
 	}
+	
 	@Override
 	public String toString() {
 		return "OwnCertificate [id=" + id + ", number=" + number
@@ -150,5 +151,129 @@ public class OwnCertificate {
 				+ datesign + ", products=" + products + ", dateload="
 				+ dateload + "]";
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((beltpp == null) ? 0 : beltpp.hashCode());
+		result = prime * result
+				+ ((blanknumber == null) ? 0 : blanknumber.hashCode());
+		result = prime * result
+				+ ((branches == null) ? 0 : branches.hashCode());
+		result = prime * result
+				+ ((customeraddress == null) ? 0 : customeraddress.hashCode());
+		result = prime * result
+				+ ((customername == null) ? 0 : customername.hashCode());
+		result = prime * result
+				+ ((customerunp == null) ? 0 : customerunp.hashCode());
+		result = prime * result
+				+ ((datecert == null) ? 0 : datecert.hashCode());
+		result = prime * result
+				+ ((dateexpire == null) ? 0 : dateexpire.hashCode());
+		result = prime * result
+				+ ((datesign == null) ? 0 : datesign.hashCode());
+		result = prime * result + ((expert == null) ? 0 : expert.hashCode());
+		result = prime * result
+				+ ((factoryaddress == null) ? 0 : factoryaddress.hashCode());
+		result = prime * result + ((number == null) ? 0 : number.hashCode());
+		result = prime * result
+				+ ((products == null) ? 0 : products.hashCode());
+		result = prime * result + ((signer == null) ? 0 : signer.hashCode());
+		result = prime * result
+				+ ((signerjob == null) ? 0 : signerjob.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		
+		if (getClass() != obj.getClass())
+			return false;
+		OwnCertificate other = (OwnCertificate) obj;
+		if (beltpp == null) {
+			if (other.beltpp != null)
+				return false;
+		} else if (!beltpp.equals(other.beltpp))
+			return false;
+		if (blanknumber == null) {
+			if (other.blanknumber != null)
+				return false;
+		} else if (!blanknumber.equals(other.blanknumber))
+			return false;
+		if (branches == null) {
+			if (other.branches != null)
+				return false;
+		} else if (!branches.equals(other.branches))
+			return false;
+		if (customeraddress == null) {
+			if (other.customeraddress != null)
+				return false;
+		} else if (!customeraddress.equals(other.customeraddress))
+			return false;
+		if (customername == null) {
+			if (other.customername != null)
+				return false;
+		} else if (!customername.equals(other.customername))
+			return false;
+		if (customerunp == null) {
+			if (other.customerunp != null)
+				return false;
+		} else if (!customerunp.equals(other.customerunp))
+			return false;
+		if (datecert == null) {
+			if (other.datecert != null)
+				return false;
+		} else if (!datecert.equals(other.datecert))
+			return false;
+		if (dateexpire == null) {
+			if (other.dateexpire != null)
+				return false;
+		} else if (!dateexpire.equals(other.dateexpire))
+			return false;
+		if (datesign == null) {
+			if (other.datesign != null)
+				return false;
+		} else if (!datesign.equals(other.datesign))
+			return false;
+		if (expert == null) {
+			if (other.expert != null)
+				return false;
+		} else if (!expert.equals(other.expert))
+			return false;
+		if (factoryaddress == null) {
+			if (other.factoryaddress != null)
+				return false;
+		} else if (!factoryaddress.equals(other.factoryaddress))
+			return false;
+		if (number == null) {
+			if (other.number != null)
+				return false;
+		} else if (!number.equals(other.number))
+			return false;
+		if (products == null) {
+			if (other.products != null)
+				return false;
+		} else if (!products.equals(other.products))
+			return false;
+		if (signer == null) {
+			if (other.signer != null)
+				return false;
+		} else if (!signer.equals(other.signer))
+			return false;
+		if (signerjob == null) {
+			if (other.signerjob != null)
+				return false;
+		} else if (!signerjob.equals(other.signerjob))
+			return false;
+		return true;
+	}
+	
+	
+	
+	
+	
 
 }

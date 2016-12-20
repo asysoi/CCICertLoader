@@ -40,16 +40,23 @@ public class CertificateController {
 	@Autowired
 	private OwnCertificateService service;
 
-	/* -----------------------------
-	 * Get list of all certificates
-	 * ----------------------------- */
+	/* -----------------------------------------
+	 * Get list of all certificates by filter
+	 * ----------------------------------------- */
 	@GetMapping(value = "owncerts", headers = "Accept=application/json")
 	@ResponseStatus (HttpStatus.OK)
 	public List<OwnCertificate> getCertificates(
-			@RequestParam(value = "from", required = false) String datefrom,
-			@RequestParam(value = "to", required = false) String dateto) {
+			@RequestParam(value = "number", required = false) String number,
+			@RequestParam(value = "blanknumber", required = false) String blanknumber,
+			@RequestParam(value = "from", required = false) String from,
+			@RequestParam(value = "to", required = false) String to ) {
 		List<OwnCertificate> certificates;
-		certificates = service.getAllCertificates();
+		Filter filter = new Filter(number, blanknumber, from, to);
+		certificates = service.getOwnCertificates(filter);
+		
+		if (certificates.size() == 0 ) {
+			throw (new NotFoundCertificateException("Не найдено сертификатов, удовлетворяющих условиям поиска: " + filter.toString()));
+		}
 		return certificates;
 	}
 
@@ -78,11 +85,12 @@ public class CertificateController {
 		
 		try {
 			certificate = mapper.readValue(jsonstr, OwnCertificate.class);
+			service.addOwnSertificate(certificate);
 		} catch (JsonGenerationException e) {
 			throw(new AddCertificateException(e.toString()));
 		} catch (JsonMappingException e) {
 			throw(new AddCertificateException(e.toString()));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw(new AddCertificateException(e.toString()));
 		}
        return certificate;
@@ -97,23 +105,8 @@ public class CertificateController {
 		try {
 		    return service.getOwnCertificateById(id);
 		} catch (Exception ex) {
-			throw(new NotFoundCertificateException(ex.toString()));			
+			throw(new NotFoundCertificateException("Серитификат id = " + id + " не найден:  " + ex.toString()));			
 		}
-		/*
-		System.out.println("id="+id);
-		service.deleteOwnCertificate(id);
-		URI location = null;
-		try {
-			location = new URI("http://localhost/");
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.setLocation(location);
-		responseHeaders.set("MyResponseHeader", "MyValue");
-		return new ResponseEntity<String>("Hello World", responseHeaders, HttpStatus.OK);
-		*/
 	}
 
 	/* -----------------------------
@@ -122,8 +115,7 @@ public class CertificateController {
 	@PutMapping(value = "owncerts",  consumes  = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public OwnCertificate updateCountry(@RequestBody OwnCertificate certificate) {
-		return service.updateCertificate(certificate);
-
+		return service.updateOwnCertificate(certificate);
 	}
 	
 	/* -----------------------------

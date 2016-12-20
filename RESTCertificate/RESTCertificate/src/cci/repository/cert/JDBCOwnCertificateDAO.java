@@ -1,11 +1,10 @@
 package cci.repository.cert;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -15,6 +14,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import cci.controller.CertificateUpdatErorrException;
+import cci.controller.Filter;
+import cci.controller.NotFoundCertificateException;
 import cci.model.OwnCertificate;
 import cci.model.Product;
 import cci.model.Company;
@@ -22,6 +24,8 @@ import cci.model.Company;
 @Repository
 public class JDBCOwnCertificateDAO {
 
+	private static final Logger LOG = Logger
+			.getLogger(JDBCOwnCertificateDAO.class);
 	private NamedParameterJdbcTemplate template;
 
 	@Autowired
@@ -29,8 +33,16 @@ public class JDBCOwnCertificateDAO {
 		this.template = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-	public List<OwnCertificate> getAllOwnCertificates() {
-		String sql = "select * from OWN_CERT_VIEW ORDER BY id";
+	// ---------------------------------------------------------------
+	// Получить список сертификатов
+	// ---------------------------------------------------------------
+	public List<OwnCertificate> getOwnCertificates(Filter filter, boolean isLike) {
+
+		String sql = "select * from owncertificate "
+				+ (isLike ? filter.getWhereLikeClause() : filter
+						.getWhereEqualClause()) + " ORDER BY id";
+
+		System.out.println(sql);
 
 		return this.template.getJdbcOperations()
 				.query(sql,
@@ -39,9 +51,9 @@ public class JDBCOwnCertificateDAO {
 	}
 
 	// ---------------------------------------------------------------
-	// поиск сертификата по id -> PS
+	// поиск единственного сертификата по id -> PS
 	// ---------------------------------------------------------------
-	public OwnCertificate findCertificateByID(int id) throws Exception {
+	public OwnCertificate findOwnCertificateByID(int id) throws Exception {
 		OwnCertificate cert = null;
 
 		String sql = "select * from owncertificate WHERE id = ?";
@@ -65,22 +77,61 @@ public class JDBCOwnCertificateDAO {
 	}
 
 	// ---------------------------------------------------------------
-	// save certificate -> PS
+	// Сохранение сертификата в базе дданных
 	// ---------------------------------------------------------------
-	public OwnCertificate save(OwnCertificate cert) throws Exception {
+	public OwnCertificate saveOwnCertificate(OwnCertificate cert)
+			throws Exception {
 
-		String sql = "SELECT id FROM beltpp WHERE name = '"  
-				+  cert.getBeltpp().getName() + "'";
+		cert.setId_beltpp(getBeltppID(cert));
+
+		String sql_cert = "insert into owncertificate(id_beltpp, number, blanknumber, customername, customeraddress, "
+				+ " customerunp, factoryaddress, branches, datecert, dateexpire, expert, signer, signerjob, datesign ) "
+				+ " values ("
+				+ " :id_beltpp, :number, :blanknumber, :customername, :customeraddress, :customerunp, :factoryaddress, :branches,"
+				+ " STR_TO_DATE(:datecert,'%d.%m.%Y'), "
+				+ " STR_TO_DATE(:dateexpire,'%d.%m.%Y'), "
+				+ " :expert, :signer, :signerjob, "
+				+ " STR_TO_DATE(:datesign,'%d.%m.%Y')" + " )";
+
+		SqlParameterSource parameters = new BeanPropertySqlParameterSource(cert);
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		int id = 0;
-        try {		
-		  id = this.template.getJdbcOperations().queryForObject(sql,
-				Integer.class); 
-        } catch (Exception ex) {
-			System.out.println(ex.getMessage());
-			System.out.println("Query: " + sql);
+
+		int row = template.update(sql_cert, parameters, keyHolder,
+				new String[] { "id" });
+		id = keyHolder.getKey().intValue();
+
+		if (row > 0) {
+			String sql_product = "insert into ownproduct(id_certificate, number, name, code) values ("
+					+ id + ", :number, :name, :code)";
+
+			if (cert.getProducts() != null && cert.getProducts().size() > 0) {
+				SqlParameterSource[] batch = SqlParameterSourceUtils
+						.createBatch(cert.getProducts().toArray());
+				int[] updateCounts = template.batchUpdate(sql_product, batch);
+			}
+
+			cert.setId(id);
 		}
 
-		System.out.println("id = " + id);
+		return cert;
+	}
+
+	// -------------------------------------------
+	// Get id of beltpp branch
+	// -------------------------------------------
+	private int getBeltppID(OwnCertificate cert) {
+		String sql = "SELECT id FROM beltpp WHERE name = '"
+				+ cert.getBeltpp().getName() + "'";
+		int id = 0;
+		try {
+			id = this.template.getJdbcOperations().queryForObject(sql,
+					Integer.class);
+		} catch (Exception ex) {
+			System.out
+					.println(ex.getClass().getName() + ": " + ex.getMessage());
+		}
+
 		if (id == 0) {
 			sql = "insert into beltpp(name, address) values(:name, :address)";
 			SqlParameterSource parameters = new BeanPropertySqlParameterSource(
@@ -92,79 +143,87 @@ public class JDBCOwnCertificateDAO {
 					new String[] { "id" });
 			id = keyHolder.getKey().intValue();
 		}
-		cert.setId_beltpp(id);
 
-		String sql_cert = "insert into owncertificate(id_beltpp, number, blanknumber, customername, customeraddress, "
-				+ " customerunp, factoryaddress, branches, datecert, dateexpire, expert, signer, signerjob, datesign ) "
-				+ " values ("
-				+ " :id_beltpp, :number, :blanknumber, :customername, :customeraddress, :customerunp, :factoryaddress, :branches,"
-				+ " TO_DATE(:datecert,'DD.MM.YY'), "
-				+ " TO_DATE(:dateexpire,'DD.MM.YY'), "
-				+ " :expert, :signer, :signerjob, "
-				+ " TO_DATE(:datesign,'DD.MM.YY')" + " )";
-
-		System.out.println("Step 2");
-		SqlParameterSource parameters = new BeanPropertySqlParameterSource(cert);
-		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-		id = 0;
-		System.out.println("Step 3");
-		int row = template.update(sql_cert, parameters, keyHolder,
-				new String[] { "id" });
-		System.out.println("Step 4");
-		id = keyHolder.getKey().intValue();
-		System.out.println("Step 5");
-		String sql_product = "insert into ownproduct(id_certificate, number, name, code) values ("
-				+ id + ", :number, :name, :code)";
-		System.out.println("Step 6");
-		if (cert.getProducts() != null && cert.getProducts().size() > 0) {
-			SqlParameterSource[] batch = SqlParameterSourceUtils
-					.createBatch(cert.getProducts().toArray());
-			int[] updateCounts = template.batchUpdate(sql_product, batch);
-		}
-		System.out.println("Step 7");
-		cert.setId(id);
-		
-		
-		return cert;
+		return id;
 	}
 
 	// ---------------------------------------------------------------
-	// update certificate XXXX
+	// update certificate
 	// ---------------------------------------------------------------
-	public void update(OwnCertificate cert) {
+	public OwnCertificate updateOwnCertificate(OwnCertificate cert) {
 
-		String sql_cert = "update c_cert SET "
-				+ "forms = :forms, unn = :unn, kontrp = :kontrp, kontrs = :kontrs, adress = :adress, poluchat = :poluchat, adresspol = :adresspol, datacert = :datacert,"
-				+ "nomercert = :nomercert, expert = :expert, nblanka = :nblanka, rukovod = :rukovod, transport = :transport, marshrut = :marshrut, otmetka = :otmetka,"
-				+ "stranav = :stranav, stranapr = :stranapr, status = :status, koldoplist = :koldoplist, flexp = :flexp, unnexp = :unnexp, expp = :expp, "
-				+ "exps = :exps, expadress = :expadress, flimp = :flimp, importer = :importer, adressimp = :adressimp, flsez = :flsez, sez = :sez,"
-				+ "flsezrez = :flsezrez, stranap = :stranap, parentnumber = :parentnumber, parentstatus = : parentstatus, issuedate=TO_DATE(:datacert,'DD.MM.YY')"
-				+ "WHERE cert_id = :cert_id";
-
-		SqlParameterSource parameters = new BeanPropertySqlParameterSource(cert);
+		Filter filter = new Filter(cert.getNumber(), cert.getBlanknumber(),
+				null, null);
+		List<OwnCertificate> bufcerts = null;
 
 		try {
-
-			int row = template.update(sql_cert, parameters);
-
-			template.getJdbcOperations().update(
-					"delete from C_PRODUCT where cert_id = ?",
-					Long.valueOf(cert.getId()));
-
-			String sql_product = "insert into C_PRODUCT values ("
-					+ " beltpp.product_id_seq.nextval, " + cert.getId() + ", "
-					+ " :numerator, :tovar, :vidup, :kriter, :ves, :schet)";
-
-			if (cert.getProducts() != null && cert.getProducts().size() > 0) {
-				SqlParameterSource[] batch = SqlParameterSourceUtils
-						.createBatch(cert.getProducts().toArray());
-				int[] updateCounts = template.batchUpdate(sql_product, batch);
-			}
-
+			bufcerts = getOwnCertificates(filter, false);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOG.info("Ошибка поиска обновляемого сертификата: "
+					+ ex.getMessage());
+			throw (new NotFoundCertificateException(
+					"Ошибка процедуры поиска сертификата в базе данных: "
+							+ ex.getMessage()));
+
 		}
 
-	}
+		if (bufcerts != null && bufcerts.size() == 1) {
 
+			if (cert.equals(bufcerts.get(0))) {
+				throw new CertificateUpdatErorrException("Обновляемый сертификат не изменился. Обновление в базе данных не выполнялось.");
+				
+			} else {
+
+				cert.setId(bufcerts.get(0).getId());
+				cert.setId_beltpp(getBeltppID(cert));
+
+				String sql_cert = "update owncertificate SET "
+						+ " id_beltpp=:id_beltpp, customername=:customername, customeraddress=:customeraddress, customerunp=:customerunp,"
+						+ " factoryaddress=:factoryaddress, branches=:branches, datecert=STR_TO_DATE(:datecert,'%d.%m.%Y'), "
+						+ " dateexpire = STR_TO_DATE(:dateexpire,'%d.%m.%Y'), "
+						+ " expert = :expert, signer = :signer, signerjob = :signerjob, "
+						+ " datesign = STR_TO_DATE(:datesign,'%d.%m.%Y') "
+						+ " WHERE id = :id ";
+
+				SqlParameterSource parameters = new BeanPropertySqlParameterSource(cert);
+
+				try {
+
+					int row = template.update(sql_cert, parameters);
+					System.out.println("Row updated = " + row);
+
+					if (row > 0) {
+
+						template.getJdbcOperations()
+								.update("delete from ownproduct where id_certificate = ?",
+										cert.getId());
+
+						String sql_product = "insert into ownproduct(id_certificate, number, name, code) values ("
+								+ cert.getId() + ", :number, :name, :code)";
+						System.out.println(sql_product);
+
+						if (cert.getProducts() != null
+								&& cert.getProducts().size() > 0) {
+							SqlParameterSource[] batch = SqlParameterSourceUtils
+									.createBatch(cert.getProducts().toArray());
+							int[] updateCounts = template.batchUpdate(
+									sql_product, batch);
+							System.out.println("Rows updated = "
+									+ updateCounts.length);
+						}
+					}
+				} catch (Exception ex) {
+					LOG.info(ex.getMessage());
+					throw (new NotFoundCertificateException(
+							"Ошибка обновления найденного cертификата в базе данных: "
+									+ ex.getMessage()));
+				}
+			}
+		} else {
+			throw (new NotFoundCertificateException(
+					"Сертификат для обновления в базе данных не найден."));
+		}
+
+		return cert;
+	}
 }
