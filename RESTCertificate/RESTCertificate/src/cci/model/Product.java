@@ -6,7 +6,6 @@ public class Product {
 	
 	@JsonIgnore
 	private int id;
-	
 	private int number;
 	private String name;
 	private String code;

@@ -61,7 +61,7 @@ public class CertificateController {
 	}
 
 	/* -----------------------------
-	 * Add new certificate
+	 * Add new certificate from JSON body
 	 * ----------------------------- */
 	@PostMapping(value = "owncerts", headers = "Accept=application/json")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -73,6 +73,21 @@ public class CertificateController {
 		}
 		return certificate;
 	}
+	
+	/* -----------------------------
+	 * Add new certificate from XML body
+	 * ----------------------------- */
+	@PostMapping(value = "owncerts", headers = "Accept=application/xml")
+	@ResponseStatus(HttpStatus.CREATED)
+	public OwnCertificate addXMLCertificate(@RequestBody OwnCertificate certificate) {
+		try {
+			service.addOwnSertificate(certificate);
+		} catch (Exception ex) {
+			throw(new AddCertificateException(ex.toString()));
+		}
+		return certificate;
+	}
+	
 	
 	/* -----------------------------
 	 * Add new certificate in debug mode
@@ -113,7 +128,7 @@ public class CertificateController {
 	 * Update certificate
 	 * ----------------------------- */
 	@PutMapping(value = "owncerts",  consumes  = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.ACCEPTED)
+	@ResponseStatus(HttpStatus.OK)
 	public OwnCertificate updateCountry(@RequestBody OwnCertificate certificate) {
 		return service.updateOwnCertificate(certificate);
 	}

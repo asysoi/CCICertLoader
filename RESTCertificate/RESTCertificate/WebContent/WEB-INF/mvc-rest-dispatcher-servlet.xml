@@ -23,11 +23,25 @@
       <bean class="cci.web.controller.LogInterceptor"/>
     </mvc:interceptors -->
      
-	
+	<!--  JSON Media converter -->
 	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
         <property name="prefixJson" value="false"/>
         <property name="supportedMediaTypes" value="application/json"/>
     </bean>
+    
+    
+    <!--  XML media converter -->
+    <bean id="xmlMessageConverter" class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter">
+    </bean>   
+    
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+       <property name="messageConverters">
+		<list>
+			<ref bean="jsonConverter"/>
+			<ref bean="xmlMessageConverter"/>
+		</list>
+		</property>
+	</bean>
          
     <!--  database configuration -->     
     <bean id="certificateDAO" class="cci.repository.cert.JDBCOwnCertificateDAO">
@@ -37,7 +51,7 @@
  
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/owncert_2?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/owncert?useUnicode=true&amp;characterEncoding=UTF-8"/>
         <property name="username" value="cert"/>
         <property name="password" value="123456"/>
         <!-- property name="useUnicode" value="true"/>
