@@ -23,11 +23,26 @@
       <bean class="cci.web.controller.LogInterceptor"/>
     </mvc:interceptors -->
      
-	
+	<!--  JSON Media converter -->
 	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
         <property name="prefixJson" value="false"/>
         <property name="supportedMediaTypes" value="application/json"/>
     </bean>
+    
+    
+    <!--  XML media converter -->
+    <bean id="xmlMessageConverter" class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter">
+         <property name="supportedMediaTypes" value="application/xml"/>
+    </bean>   
+    
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+       <property name="messageConverters">
+		<list>
+			<ref bean="jsonConverter"/>
+			<ref bean="xmlMessageConverter"/>
+		</list>
+		</property>
+	</bean>
          
     <!--  database configuration -->     
     <bean id="certificateDAO" class="cci.repository.cert.JDBCOwnCertificateDAO">

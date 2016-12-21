@@ -2,16 +2,19 @@ package cci.model;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OwnCertificate {
     
 	private int id;
 	@JsonIgnore
 	private int id_beltpp;
-	
 	private String number;
 	private String blanknumber;
 	private String customername;
@@ -26,6 +29,7 @@ public class OwnCertificate {
 	private String signer;
 	private String signerjob;
 	private String datesign;
+	
 	private List<Product> products;
 	private String dateload;
 	

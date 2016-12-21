@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><ownCertificate><beltpp><address>МИнск, Я.Колоса</address><id>0</id><name>Минское отделение БелТПП</name><unp>2345</unp></beltpp><blanknumber>0030564</blanknumber><branches>1. Первая фабрика 2. Вторая фабрика</branches><customeraddress>220070,Минск, Ольшевского 23-56</customeraddress><customername>Призма Сервис</customername><customerunp>12345667789</customerunp><datecert>21.06.2014</datecert><dateexpire>21.06.2015</dateexpire><datesign>28.06.2014</datesign><expert>Петрова В.М.</expert><factoryaddress>Минск, ул. Советского 67</factoryaddress><id>16</id><id_beltpp>1</id_beltpp><number>1234/7824</number><products><code>3456</code><id>0</id><name>Колбаса</name><number>1</number></products><products><code>4567</code><id>0</id><name>Сардельки:</name><number>2</number></products><products><code>423765263 7</code><id>0</id><name>Мороженное:</name><number>3</number></products><signer>Туляпский М.П.</signer><signerjob>Начальник мочалок</signerjob></ownCertificate>
+
+    <ownCertificate>
+      <beltpp>
+        <address>МИнск, Я.Колоса</address>
+        <name>Минское отделение БелТПП</name>
+        <unp>2345</unp>
+      </beltpp>
+      <blanknumber>00311111</blanknumber>
+      <branches>1. Первая фабрика 2. Вторая фабрика</branches>
+      <customeraddress>220070,Минск, Ольшевского 23-56</customeraddress>
+      <customername>Призма Сервис</customername>
+      <customerunp>12345667789</customerunp>
+      <datecert>21.06.2014</datecert>
+      <dateexpire>21.06.2015</dateexpire>
+      <datesign>28.06.2014</datesign>
+      <expert>Петрова В.М.</expert>
+      <factoryaddress>Минск, ул. Советского 67</factoryaddress>
+
+        <number>99999/7824</number>
+      <products>
+        <code>3456</code>
+        <id>0</id>
+        <name>Колбаса</name>
+        <number>1</number>
+      </products>
+      <products>
+        <code>4567</code>
+        <id>0</id>
+        <name>Сардельки:</name>
+        <number>2</number>
+      </products>
+      <products>
+        <code>423765263 7</code>
+        <id>0</id>
+        <name>Мороженное:</name>
+        <number>3</number>
+      </products>
+      <signer>Туляпский М.П.</signer>
+      <signerjob>Начальник мочалок</signerjob>
+    </ownCertificate>
+

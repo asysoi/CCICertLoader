@@ -43,7 +43,7 @@ public class CertificateController {
 	/* -----------------------------------------
 	 * Get list of all certificates by filter
 	 * ----------------------------------------- */
-	@GetMapping(value = "owncerts", headers = "Accept=application/json")
+	@GetMapping(value = "owncerts", headers = "Accept=application/json,application/xml")
 	@ResponseStatus (HttpStatus.OK)
 	public List<OwnCertificate> getCertificates(
 			@RequestParam(value = "number", required = false) String number,
@@ -61,7 +61,7 @@ public class CertificateController {
 	}
 
 	/* -----------------------------
-	 * Add new certificate
+	 * Add new certificate from JSON body
 	 * ----------------------------- */
 	@PostMapping(value = "owncerts", headers = "Accept=application/json")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -75,9 +75,24 @@ public class CertificateController {
 	}
 	
 	/* -----------------------------
+	 * Add new certificate from XML body
+	 * ----------------------------- */
+	@PostMapping(value = "owncerts", headers = "Accept=application/xml")
+	@ResponseStatus(HttpStatus.CREATED)
+	public OwnCertificate addXMLCertificate(@RequestBody OwnCertificate certificate) {
+		try {
+			service.addOwnSertificate(certificate);
+		} catch (Exception ex) {
+			throw(new AddCertificateException(ex.toString()));
+		}
+		return certificate;
+	}
+	
+	
+	/* -----------------------------
 	 * Add new certificate in debug mode
 	 * ----------------------------- */
-	@PostMapping(value = "owncerts/debug",  headers = "Accept=application/json")
+	@PostMapping(value = "owncerts/debug",  headers = "Accept=application/json,application/xml")
 	@ResponseStatus(HttpStatus.CREATED)	
 	public OwnCertificate addDebugCertificate(@RequestBody String jsonstr) {
 		OwnCertificate certificate = null;
@@ -99,7 +114,7 @@ public class CertificateController {
 	/* -----------------------------
 	 * Get certificate by ID
 	 * ----------------------------- */
-	@GetMapping(value = "owncert/{id}", headers = "Accept=application/json")
+	@GetMapping(value = "owncert/{id}", headers = "Accept=application/json,application/xml")
 	@ResponseStatus(HttpStatus.OK)
 	public OwnCertificate getOwnCertificateById(@PathVariable int id)  {
 		try {
@@ -112,8 +127,8 @@ public class CertificateController {
 	/* -----------------------------
 	 * Update certificate
 	 * ----------------------------- */
-	@PutMapping(value = "owncerts",  consumes  = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PutMapping(value = "owncerts",  headers = "Accept=application/json,application/xml")
+	@ResponseStatus(HttpStatus.OK)
 	public OwnCertificate updateCountry(@RequestBody OwnCertificate certificate) {
 		return service.updateOwnCertificate(certificate);
 	}
@@ -121,7 +136,7 @@ public class CertificateController {
 	/* -----------------------------
 	 * Delete certificate
 	 * ----------------------------- */
-	@DeleteMapping(value = "owncert/{id}",  consumes  = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "owncert/{id}",  headers = "Accept=application/json,application/xml")
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public ResponseEntity<String> deleteCountry(@PathVariable("id") int id) {
 		System.out.println("id="+id);
