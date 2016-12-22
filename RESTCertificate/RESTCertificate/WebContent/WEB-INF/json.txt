@@ -1,24 +1,28 @@
-﻿{
-        "id": 0,
-        "number": "0 - 367.1/3860-1",
-        "blanknumber": "0037426",
+﻿ --------------------------------------   JSON ----------------------------------------   
+   {
+        "id": 94,
+        "type": "S",
+        "number": "23 - 8957.1/3869-1",
+        "blanknumber": "1037566",
         "customername": "ООО \"Электрощит-Сервис\"",
         "customeraddress": "220070, г.Минск, ул.Солтыса, д.187, корпус 7",
-        "customerunp": "12345667789",
+        "customerunp": "12345667",
         "factoryaddress": "220070, г.Минск, ул.Солтыса, д.187, корпус 7, Республика Беларусь",
         "branches": "1. Первый филиал, 220070, г.Минск, ул.Солтыса, д.157, корпус 12. Второй филиал, 220070, г.Минск, ул.Солтыса, д.157, корпус 1",
+        "additionallists": "2",
         "beltpp":
         {
             "name": "Унитарное предприятие по оказанию услуг \"Минское отделение торгово-промышленной палаты\"",
             "address": "220113, г.Минск, ул.Я.Коласа, д.65, т. 280-04-73",
-            "unp": "2345617890"
+            "unp": null
         },
-        "datecert": "21 июля 2014г.",
-        "dateexpire": "21 июля 2015 г.",
-        "expertname": "Петров В.А.",
+        "datestart": "01.01.2014",
+        "dateexpire": "01.01.2015",
+        "expert": "Петров В.А.",
         "signer": "М.В.Гуринович",
         "signerjob": "Начальник ОЭиС №1",
-        "signerdate": "28.07.2014",
+        "datecert": "01.01.2014",
+        "dateload": "22.12.2016 13:31:11",
         "products":
         [
             {
@@ -36,6 +40,49 @@
                 "name": "Распределеители",
                 "code": "8537 20 910 0"
             }
-        ],
-        "dateload": null
+        ]
     }
+
+
+    
+  ------------------------------- XML -------------------------------------  
+  <ownCertificate>
+  <id>94</id>
+  <type>P</type>
+  <number>23 - 8957.1/3869-1</number>
+  <blanknumber>1037566</blanknumber>
+  <beltpp>
+    <name>Унитарное предприятие по оказанию услуг "Минское отделение торгово-промышленной палаты"</name>
+    <address>220113, г.Минск, ул.Я.Коласа, д.65, т. 280-04-73</address>
+  </beltpp>
+  <customername>ООО "Электрощит-Сервис"</customername>
+  <customeraddress>220070, г.Минск, ул.Солтыса, д.187, корпус 7</customeraddress>
+  <customerunp>12345667</customerunp>
+  <factoryaddress>220070, г.Минск, ул.Солтыса, д.187, корпус 7, Республика Беларусь</factoryaddress>
+  <branches>1. Первый филиал, 220070, г.Минск, ул.Солтыса, д.157, корпус 12. Второй филиал, 220070, г.Минск, ул.Солтыса, д.157, корпус 1</branches>
+  <additionallists>2</additionallists>
+  <datestart>01.01.2014</datestart>
+  <dateexpire>01.01.2015</dateexpire>
+  <expert>Петров В.А.</expert>
+  <signer>М.В.Гуринович</signer>
+  <signerjob>Начальник ОЭиС №1</signerjob>
+  <datecert>01.01.2014</datecert>
+  <dateload>22.12.2016 13:31:11</dateload>
+  <product>
+    <number>1</number>
+    <name>Подстанция</name>
+    <code>8537 20 910 0</code>
+  </product>
+  <product>
+    <number>2</number>
+    <name>Камеры</name>
+    <code>8537 20 910 0</code>
+  </product>
+  <product>
+    <number>3</number>
+    <name>Распределеители</name>
+    <code>8537 20 910 0</code>
+  </product>
+</ownCertificate>
+
+

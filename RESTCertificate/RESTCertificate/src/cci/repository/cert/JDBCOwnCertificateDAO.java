@@ -18,8 +18,10 @@ import cci.controller.CertificateUpdatErorrException;
 import cci.controller.Filter;
 import cci.controller.NotFoundCertificateException;
 import cci.model.OwnCertificate;
+import cci.model.OwnCertificates;
 import cci.model.Product;
 import cci.model.Company;
+import cci.model.Products;
 
 @Repository
 public class JDBCOwnCertificateDAO {
@@ -36,18 +38,20 @@ public class JDBCOwnCertificateDAO {
 	// ---------------------------------------------------------------
 	// Получить список сертификатов
 	// ---------------------------------------------------------------
-	public List<OwnCertificate> getOwnCertificates(Filter filter, boolean isLike) {
+	public OwnCertificates getOwnCertificates(Filter filter, boolean isLike) {
 
-		String sql = "select * from owncertificate "
+		String sql = "select * from certview "
 				+ (isLike ? filter.getWhereLikeClause() : filter
 						.getWhereEqualClause()) + " ORDER BY id";
-
-		System.out.println(sql);
-
-		return this.template.getJdbcOperations()
-				.query(sql,
-						new BeanPropertyRowMapper<OwnCertificate>(
-								OwnCertificate.class));
+         OwnCertificates certs = new  OwnCertificates();
+		        
+		 certs.setOwncertificates(this.template.getJdbcOperations()
+				.query(sql, new OwnCertificateMapper()));
+						
+//						new BeanPropertyRowMapper<OwnCertificate>(
+								//OwnCertificate.class)));
+		 
+		 return certs; 
 	}
 
 	// ---------------------------------------------------------------
@@ -56,20 +60,23 @@ public class JDBCOwnCertificateDAO {
 	public OwnCertificate findOwnCertificateByID(int id) throws Exception {
 		OwnCertificate cert = null;
 
-		String sql = "select * from owncertificate WHERE id = ?";
+		String sql = "select * from certview WHERE id = ?";
 		cert = template.getJdbcOperations()
 				.queryForObject(
 						sql,
 						new Object[] { id },
-						new BeanPropertyRowMapper<OwnCertificate>(
-								OwnCertificate.class));
+						new OwnCertificateMapper());
+		
+//						new BeanPropertyRowMapper<OwnCertificate>(
+//								OwnCertificate.class));
 
-		sql = "select * from beltpp WHERE id = ? ";
-		cert.setBeltpp(template.getJdbcOperations().queryForObject(sql,
-				new Object[] { cert.getId_beltpp() },
-				new BeanPropertyRowMapper<Company>(Company.class)));
+//		sql = "select * from beltpp WHERE id = ? ";
+//		cert.setBeltpp(template.getJdbcOperations().queryForObject(sql,
+//				new Object[] { cert.getId_beltpp() },
+//				new BeanPropertyRowMapper<Company>(Company.class)));
 
 		sql = "select * from ownproduct WHERE id_certificate = ? ORDER BY id";
+		
 		cert.setProducts(template.getJdbcOperations().query(sql,
 				new Object[] { cert.getId() },
 				new BeanPropertyRowMapper<Product>(Product.class)));
@@ -84,14 +91,14 @@ public class JDBCOwnCertificateDAO {
 
 		cert.setId_beltpp(getBeltppID(cert));
 
-		String sql_cert = "insert into owncertificate(id_beltpp, number, blanknumber, customername, customeraddress, "
-				+ " customerunp, factoryaddress, branches, datecert, dateexpire, expert, signer, signerjob, datesign ) "
+		String sql_cert = "insert into owncertificate(id_beltpp, number, blanknumber, type, customername, customeraddress, "
+				+ " customerunp, factoryaddress, branches, datecert, dateexpire, expert, signer, signerjob, datestart, additionallists) "
 				+ " values ("
-				+ " :id_beltpp, :number, :blanknumber, :customername, :customeraddress, :customerunp, :factoryaddress, :branches,"
+				+ " :id_beltpp, :number, :blanknumber, :type, :customername, :customeraddress, :customerunp, :factoryaddress, :branches,"
 				+ " STR_TO_DATE(:datecert,'%d.%m.%Y'), "
 				+ " STR_TO_DATE(:dateexpire,'%d.%m.%Y'), "
 				+ " :expert, :signer, :signerjob, "
-				+ " STR_TO_DATE(:datesign,'%d.%m.%Y')" + " )";
+				+ " STR_TO_DATE(:datestart,'%d.%m.%Y')" + ", :additionallists)";
 
 		SqlParameterSource parameters = new BeanPropertySqlParameterSource(cert);
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -133,7 +140,7 @@ public class JDBCOwnCertificateDAO {
 		}
 
 		if (id == 0) {
-			sql = "insert into beltpp(name, address) values(:name, :address)";
+			sql = "insert into beltpp(name, address, unp) values(:name, :address, :unp)";
 			SqlParameterSource parameters = new BeanPropertySqlParameterSource(
 					cert.getBeltpp());
 			GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -157,7 +164,7 @@ public class JDBCOwnCertificateDAO {
 		List<OwnCertificate> bufcerts = null;
 
 		try {
-			bufcerts = getOwnCertificates(filter, false);
+			bufcerts = getOwnCertificates(filter, false).getOwncertificates();
 		} catch (Exception ex) {
 			LOG.info("Ошибка поиска обновляемого сертификата: "
 					+ ex.getMessage());
@@ -178,11 +185,11 @@ public class JDBCOwnCertificateDAO {
 				cert.setId_beltpp(getBeltppID(cert));
 
 				String sql_cert = "update owncertificate SET "
-						+ " id_beltpp=:id_beltpp, customername=:customername, customeraddress=:customeraddress, customerunp=:customerunp,"
+						+ " id_beltpp=:id_beltpp, type=:type, customername=:customername, customeraddress=:customeraddress, customerunp=:customerunp,"
 						+ " factoryaddress=:factoryaddress, branches=:branches, datecert=STR_TO_DATE(:datecert,'%d.%m.%Y'), "
 						+ " dateexpire = STR_TO_DATE(:dateexpire,'%d.%m.%Y'), "
-						+ " expert = :expert, signer = :signer, signerjob = :signerjob, "
-						+ " datesign = STR_TO_DATE(:datesign,'%d.%m.%Y') "
+						+ " expert = :expert, signer = :signer, signerjob = :signerjob, additionallists=:additionallists, "
+						+ " datestart = STR_TO_DATE(:datestart,'%d.%m.%Y') "
 						+ " WHERE id = :id ";
 
 				SqlParameterSource parameters = new BeanPropertySqlParameterSource(cert);

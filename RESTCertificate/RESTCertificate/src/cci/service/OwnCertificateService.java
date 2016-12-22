@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cci.controller.Filter;
-import cci.model.Company;
 import cci.model.OwnCertificate;
-import cci.model.Product;
+import cci.model.OwnCertificates;
 import cci.repository.cert.JDBCOwnCertificateDAO;
 
 @Service
@@ -18,7 +17,7 @@ public class OwnCertificateService {
 	@Autowired
 	private JDBCOwnCertificateDAO certificateDAO;
 
-	public List<OwnCertificate> getOwnCertificates(Filter filter) {
+	public OwnCertificates getOwnCertificates(Filter filter) {
 	   return certificateDAO.getOwnCertificates(filter, true);
 	}
 	

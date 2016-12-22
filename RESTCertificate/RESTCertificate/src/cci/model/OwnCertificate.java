@@ -4,17 +4,22 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
+@XmlType(propOrder = { "id", "type", "number", "blanknumber", "beltpp", "customername", "customeraddress", "customerunp", 
+		"factoryaddress", "branches", "additionallists", "datestart", "dateexpire", "expert", "signer", "signerjob", "datecert", "dateload", "products" })
 public class OwnCertificate {
     
 	private int id;
 	@JsonIgnore
 	private int id_beltpp;
+	private String type;
 	private String number;
 	private String blanknumber;
 	private String customername;
@@ -22,16 +27,17 @@ public class OwnCertificate {
 	private String customerunp;
 	private String factoryaddress;
 	private String branches;
+	private String additionallists;
 	private Company beltpp;
-	private String datecert;
+	private String datestart;
 	private String dateexpire;
 	private String expert;
 	private String signer;
 	private String signerjob;
-	private String datesign;
-	
+	private String datecert;
+	private String dateload;	
 	private List<Product> products;
-	private String dateload;
+
 	
 	public int getId() {
 		return id;
@@ -39,6 +45,13 @@ public class OwnCertificate {
 	public void setId(int id) {
 		this.id = id;
 	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	@XmlTransient
 	public int getId_beltpp() {
 		return id_beltpp;
 	}
@@ -87,17 +100,23 @@ public class OwnCertificate {
 	public void setBranches(String branches) {
 		this.branches = branches;
 	}
+	public String getAdditionallists() {
+		return additionallists;
+	}
+	public void setAdditionallists(String additionallists) {
+		this.additionallists = additionallists;
+	}
 	public Company getBeltpp() {
 		return beltpp;
 	}
 	public void setBeltpp(Company beltpp) {
 		this.beltpp = beltpp;
 	}
-	public String getDatecert() {
-		return datecert;
+	public String getDatestart() {
+		return datestart;
 	}
-	public void setDatecert(String datecert) {
-		this.datecert = datecert;
+	public void setDatestart(String datestart) {
+		this.datestart = datestart;
 	}
 	public String getDateexpire() {
 		return dateexpire;
@@ -123,12 +142,13 @@ public class OwnCertificate {
 	public void setSignerjob(String signerjob) {
 		this.signerjob = signerjob;
 	}
-	public String getDatesign() {
-		return datesign;
+	public String getDatecert() {
+		return datecert;
 	}
-	public void setDatesign(String datesign) {
-		this.datesign = datesign;
+	public void setDatecert(String datecert) {
+		this.datecert = datecert;
 	}
+	@XmlElement(name="product")
 	public List<Product> getProducts() {
 		return products;
 	}
@@ -152,7 +172,7 @@ public class OwnCertificate {
 				+ beltpp + ", datecert=" + datecert + ", dateexpire="
 				+ dateexpire + ", expertname=" + expert + ", signer="
 				+ signer + ", signerjob=" + signerjob + ", signerdate="
-				+ datesign + ", products=" + products + ", dateload="
+				+ datestart + ", products=" + products + ", dateload="
 				+ dateload + "]";
 	}
 	@Override
@@ -175,7 +195,7 @@ public class OwnCertificate {
 		result = prime * result
 				+ ((dateexpire == null) ? 0 : dateexpire.hashCode());
 		result = prime * result
-				+ ((datesign == null) ? 0 : datesign.hashCode());
+				+ ((datestart == null) ? 0 : datestart.hashCode());
 		result = prime * result + ((expert == null) ? 0 : expert.hashCode());
 		result = prime * result
 				+ ((factoryaddress == null) ? 0 : factoryaddress.hashCode());
@@ -237,10 +257,10 @@ public class OwnCertificate {
 				return false;
 		} else if (!dateexpire.equals(other.dateexpire))
 			return false;
-		if (datesign == null) {
-			if (other.datesign != null)
+		if (datestart == null) {
+			if (other.datestart != null)
 				return false;
-		} else if (!datesign.equals(other.datesign))
+		} else if (!datestart.equals(other.datestart))
 			return false;
 		if (expert == null) {
 			if (other.expert != null)

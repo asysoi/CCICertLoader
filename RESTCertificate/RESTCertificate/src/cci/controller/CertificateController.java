@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cci.model.Company;
 import cci.model.OwnCertificate;
+import cci.model.OwnCertificates;
 import cci.service.OwnCertificateService;
 
 @RestController
@@ -45,16 +46,16 @@ public class CertificateController {
 	 * ----------------------------------------- */
 	@GetMapping(value = "owncerts", headers = "Accept=application/json,application/xml")
 	@ResponseStatus (HttpStatus.OK)
-	public List<OwnCertificate> getCertificates(
+	public OwnCertificates getCertificates(
 			@RequestParam(value = "number", required = false) String number,
 			@RequestParam(value = "blanknumber", required = false) String blanknumber,
 			@RequestParam(value = "from", required = false) String from,
 			@RequestParam(value = "to", required = false) String to ) {
-		List<OwnCertificate> certificates;
+		OwnCertificates certificates;
 		Filter filter = new Filter(number, blanknumber, from, to);
 		certificates = service.getOwnCertificates(filter);
 		
-		if (certificates.size() == 0 ) {
+		if (certificates.getOwncertificates().size() == 0 ) {
 			throw (new NotFoundCertificateException("Не найдено сертификатов, удовлетворяющих условиям поиска: " + filter.toString()));
 		}
 		return certificates;

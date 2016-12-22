@@ -1,7 +1,10 @@
 package cci.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+@XmlType(propOrder = { "number", "name", "code"})
 public class Product {
 	
 	@JsonIgnore
@@ -17,6 +20,7 @@ public class Product {
 		this.code = code;
 	}
 
+	@XmlTransient
 	public int getId() {
 		return id;
 	}
