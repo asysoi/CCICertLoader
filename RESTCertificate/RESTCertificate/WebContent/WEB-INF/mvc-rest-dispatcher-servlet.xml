@@ -64,6 +64,7 @@
     <security:intercept-url pattern="/restservice/**" access="ROLE_USER"/> 
     <security:http-basic/>
     <security:remember-me/> 
+    <security:csrf disabled="true"/>
  </security:http>
  
  <security:authentication-manager>
