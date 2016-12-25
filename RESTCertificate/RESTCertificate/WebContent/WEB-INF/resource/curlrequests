@@ -1,0 +1,3 @@
+curl --header "Content-Type:application/xml"  --data @post.xml
+-k --user "minsk:123456"  https://127.0.0.1/RESTCertificate/owncerts
+
