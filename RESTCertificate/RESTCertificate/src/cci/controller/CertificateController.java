@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cci.model.Company;
 import cci.model.OwnCertificate;
+import cci.model.OwnCertificateHeaders;
 import cci.model.OwnCertificates;
 import cci.service.OwnCertificateService;
 
@@ -61,6 +62,27 @@ public class CertificateController {
 		return certificates;
 	}
 
+	
+	/* -----------------------------------------
+	 * Get list of all headr's certificates by filter 
+	 * ----------------------------------------- */
+	@GetMapping(value = "owncertheaders", headers = "Accept=application/json,application/xml")
+	@ResponseStatus (HttpStatus.OK)
+	public OwnCertificateHeaders getCertificateHeaders(
+			@RequestParam(value = "number", required = false) String number,
+			@RequestParam(value = "blanknumber", required = false) String blanknumber,
+			@RequestParam(value = "from", required = false) String from,
+			@RequestParam(value = "to", required = false) String to ) {
+		OwnCertificateHeaders certificates;
+		Filter filter = new Filter(number, blanknumber, from, to);
+		certificates = service.getOwnCertificateHeaders(filter);
+		
+		if (certificates.getOwncertificateheaders().size() == 0 ) {
+			throw (new NotFoundCertificateException("Не найдено сертификатов, удовлетворяющих условиям поиска: " + filter.toString()));
+		}
+		return certificates;
+	}
+	
 	/* -----------------------------
 	 * Add new certificate from JSON body
 	 * ----------------------------- */

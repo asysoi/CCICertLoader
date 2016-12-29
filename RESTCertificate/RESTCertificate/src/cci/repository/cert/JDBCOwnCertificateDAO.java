@@ -18,6 +18,8 @@ import cci.controller.CertificateUpdatErorrException;
 import cci.controller.Filter;
 import cci.controller.NotFoundCertificateException;
 import cci.model.OwnCertificate;
+import cci.model.OwnCertificateHeader;
+import cci.model.OwnCertificateHeaders;
 import cci.model.OwnCertificates;
 import cci.model.Product;
 import cci.model.Company;
@@ -54,6 +56,24 @@ public class JDBCOwnCertificateDAO {
 		 return certs; 
 	}
 
+	// ---------------------------------------------------------------
+	// Получить список заголовков сертификатов
+	// ---------------------------------------------------------------
+	public OwnCertificateHeaders getOwnCertificateHeaders(Filter filter, boolean isLike) {
+
+		String sql = "select number, blanknumber from certview "
+				+ (isLike ? filter.getWhereLikeClause() : filter
+						.getWhereEqualClause()) + " ORDER BY id";
+         OwnCertificateHeaders certs = new  OwnCertificateHeaders();
+		        
+		 certs.setOwncertificateheaders(this.template.getJdbcOperations()
+				.query(sql,	new BeanPropertyRowMapper<OwnCertificateHeader>(OwnCertificateHeader.class)));
+		 
+		 return certs; 
+	}
+	
+	
+	
 	// ---------------------------------------------------------------
 	// поиск единственного сертификата по id -> PS
 	// ---------------------------------------------------------------
@@ -129,16 +149,17 @@ public class JDBCOwnCertificateDAO {
 	// -------------------------------------------
 	private int getBeltppID(OwnCertificate cert) {
 		String sql = "SELECT id FROM beltpp WHERE name = '"
-				+ cert.getBeltpp().getName() + "'";
+				+ cert.getBeltpp().getName() + "' Limit 1";
 		int id = 0;
 		try {
 			id = this.template.getJdbcOperations().queryForObject(sql,
 					Integer.class);
+
 		} catch (Exception ex) {
 			System.out
 					.println(ex.getClass().getName() + ": " + ex.getMessage());
 		}
-
+		
 		if (id == 0) {
 			sql = "insert into beltpp(name, address, unp) values(:name, :address, :unp)";
 			SqlParameterSource parameters = new BeanPropertySqlParameterSource(

@@ -60,10 +60,11 @@
     </bean>
 
     
- <security:http auto-config="true" create-session="stateless">
-    <security:intercept-url pattern="/restservice/**" access="ROLE_USER"/> 
+ <security:http auto-config="true" create-session="stateless" use-expressions="true">
+    <security:intercept-url pattern="/**" access="isFullyAuthenticated()" requires-channel="https"/>
     <security:http-basic/>
     <security:remember-me/> 
+    <security:csrf disabled="true"/>
  </security:http>
  
  <security:authentication-manager>
