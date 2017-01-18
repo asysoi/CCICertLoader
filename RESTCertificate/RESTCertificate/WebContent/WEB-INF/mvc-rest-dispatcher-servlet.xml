@@ -29,11 +29,19 @@
         <property name="supportedMediaTypes" value="application/json"/>
     </bean>
     
-    
     <!--  XML media converter -->
     <bean id="xmlMessageConverter" class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter">
          <property name="supportedMediaTypes" value="application/xml"/>
-    </bean>   
+    </bean>
+    
+    <!--  Unsuccessfull Usage of other type of Converters -->
+    <!-- bean id="xmlMarshalConverter" class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+          <property name="marshaller" ref="xmlMarshaller" />
+          <property name="unmarshaller" ref="xmlMarshaller" />
+    </bean> 
+    <bean id="xmlMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller" />   
+    <bean id="xmlMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" /-->
+     
     
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
        <property name="messageConverters">

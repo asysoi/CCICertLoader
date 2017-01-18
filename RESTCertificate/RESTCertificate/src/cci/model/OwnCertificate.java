@@ -172,8 +172,7 @@ public class OwnCertificate {
 				+ beltpp + ", datecert=" + datecert + ", dateexpire="
 				+ dateexpire + ", expertname=" + expert + ", signer="
 				+ signer + ", signerjob=" + signerjob + ", signerdate="
-				+ datestart + ", products=" + products + ", dateload="
-				+ dateload + "]";
+				+ datestart + ", dateload="	+ dateload + ",\n Products=" + products + "]";
 	}
 	@Override
 	public int hashCode() {
