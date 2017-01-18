@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<ownCertificate>
+<type>P</type>
+<number>55.1/741-1</number>
+<blanknumber>0036468</blanknumber>
+<beltpp>
+<name>Унитарное предприятие по оказанию услуг "Минское отделение Белорусской торгово-промышленной палаты"</name>
+<address>220113, г.Минск, ул.Я.Коласа,65, т.280-04-73</address>
+</beltpp>
+<customername>Общество с ограниченной ответственностью "Промира"</customername>
+<customeraddress>223012, Минская область, Минский район, г.п.Мачулищи, здание склада ИП "Белтрансфер-Мед", кабинет 33, Республика Беларусь.</customeraddress>
+<customerunp>691390594</customerunp>
+<factoryaddress>223012, Минская область, Минский район, г.п. Мачулищи, здание склада ИП "Белтрасфер-Мед", Республика Беларусь</factoryaddress>
+<branches></branches>
+<additionallists>0042441</additionallists>
+<datestart>31.01.2014</datestart>
+<dateexpire>31.01.2015</dateexpire>
+<expert>И.А.Пугач</expert>
+<signer>М.В.Гуринович</signer>
+<signerjob>Начальник ОЭиС №1</signerjob>
+<datecert>14.02.2014</datecert>
+<product>
+<number>1.</number>
+<name>Щитки распределительные серии ЩОМ, ЩУР, ЯТП, ЩЭ  различных модификаций</name>
+<code>8537 10 990 0</code>
+</product>
+<product>
+<number>2.</number>
+<name>Вводно-распределительные устройства серии ВРУ-ТN   различных модификаций</name>
+<code>8537 10 990 0</code>
+</product>
+<product>
+<number>3.</number>
+<name>Шкафы управления технологическими процессами серии ШУТП различных модификаций</name>
+<code>8537 10 990 0</code>
+</product>
+<product>
+<number>4.</number>
+<name>Устройства комплектные низковольтного напряжения  серии УКНН-04 различных модификаций</name>
+<code>8537 10 990 0</code>
+</product>
+</ownCertificate>
